@@ -1,0 +1,48 @@
+from collections import deque
+
+def secondMinimum(n, edges, time, change):
+    adj = [[] for _ in range(n + 1)]
+
+    for u, v in edges:
+        adj[u].append(v)
+        adj[v].append(u)
+
+    INF = float('inf')
+    taken = [[INF, INF] for _ in range(n + 1)]
+
+    q = deque()
+    taken[1][0] = 0
+    q.append((1, 0))
+
+    while q:
+        node, cur = q.popleft()
+
+        if node == n and taken[n][1] != INF:
+            return taken[n][1]
+
+        if (cur // change) % 2 == 1:
+            cur += change - (cur % change)
+
+        cur += time
+
+        for nei in adj[node]:
+            if taken[nei][0] == INF:
+                taken[nei][0] = cur
+                q.append((nei, cur))
+            elif taken[nei][1] == INF and cur > taken[nei][0]:
+                taken[nei][1] = cur
+                q.append((nei, cur))
+
+    return -1
+
+
+n, m = map(int, input().split())
+
+edges = []
+for _ in range(m):
+    u, v = map(int, input().split())
+    edges.append([u, v])
+
+time, change = map(int, input().split())
+
+print(secondMinimum(n, edges, time, change))
