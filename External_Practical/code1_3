@@ -1,1 +1,17 @@
+class Solution:
+    def findSubsets(self, arr):
+        # code here
+        arr.sort()
+        res = set()
 
+        def backtrack(index, subset):
+            res.add(tuple(subset))
+
+            for i in range(index, len(arr)):
+                subset.append(arr[i])
+                backtrack(i + 1, subset)
+                subset.pop()
+
+        backtrack(0, [])
+
+        return [list(x) for x in sorted(res)]
